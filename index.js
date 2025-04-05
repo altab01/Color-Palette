@@ -28,17 +28,29 @@ const buildPalette = (colorsList) => {
       // create the div and text elements for both colors & append it to the document
       const colorElement = document.createElement("div");
       colorElement.style.backgroundColor = hexColor;
-      colorElement.appendChild(document.createTextNode(hexColor));
+      colorElement.setAttribute("data-color", hexColor);
       paletteContainer.appendChild(colorElement);
+      
+      // Add copy to clipboard functionality
+      colorElement.addEventListener('click', function() {
+        navigator.clipboard.writeText(hexColor).then(() => {
+          showCopiedToast(hexColor);
+        });
+      });
+  
       // true when hsl color is not black/white/grey
       if (hslColors[i].h) {
         const complementaryElement = document.createElement("div");
         complementaryElement.style.backgroundColor = `hsl(${hslColors[i].h},${hslColors[i].s}%,${hslColors[i].l}%)`;
-  
-        complementaryElement.appendChild(
-          document.createTextNode(hexColorComplementary)
-        );
+        complementaryElement.setAttribute("data-color", hexColorComplementary);
         complementaryContainer.appendChild(complementaryElement);
+        
+        // Add copy to clipboard functionality
+        complementaryElement.addEventListener('click', function() {
+          navigator.clipboard.writeText(hexColorComplementary).then(() => {
+            showCopiedToast(hexColorComplementary);
+          });
+        });
       }
     }
   };
@@ -281,22 +293,150 @@ const buildPalette = (colorsList) => {
     ];
   };
   
+  // Show a toast notification when a color is copied
+  function showCopiedToast(color) {
+    // Check if a toast container already exists
+    let toastContainer = document.querySelector('.toast-container');
+    
+    if (!toastContainer) {
+      toastContainer = document.createElement('div');
+      toastContainer.className = 'toast-container';
+      document.body.appendChild(toastContainer);
+      
+      // Add styles for the toast
+      const style = document.createElement('style');
+      style.textContent = `
+        .toast-container {
+          position: fixed;
+          bottom: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 9999;
+        }
+        .toast {
+          background-color: #333;
+          color: white;
+          padding: 12px 24px;
+          border-radius: 4px;
+          margin-bottom: 10px;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          animation: fadeIn 0.3s, fadeOut 0.3s 2.7s;
+          opacity: 0;
+          font-family: 'Poppins', sans-serif;
+        }
+        .toast .color-preview {
+          width: 20px;
+          height: 20px;
+          border-radius: 3px;
+          margin-right: 10px;
+          border: 1px solid rgba(255,255,255,0.3);
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOut {
+          from { opacity: 1; transform: translateY(0); }
+          to { opacity: 0; transform: translateY(-20px); }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+    
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    
+    const colorPreview = document.createElement('div');
+    colorPreview.className = 'color-preview';
+    colorPreview.style.backgroundColor = color;
+    
+    toast.appendChild(colorPreview);
+    toast.appendChild(document.createTextNode(`${color} copied to clipboard!`));
+    
+    toastContainer.appendChild(toast);
+    
+    // Force reflow to make animation work
+    void toast.offsetWidth;
+    toast.style.opacity = '1';
+    
+    // Remove toast after animation
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      setTimeout(() => {
+        toast.remove();
+      }, 300);
+    }, 3000);
+  }
+
+  // Handle file input change to show filename
+  document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('imgfile');
+    const fileNameDisplay = document.getElementById('file-name');
+    
+    if (fileInput && fileNameDisplay) {
+      fileInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+          fileNameDisplay.textContent = this.files[0].name;
+          
+          // Enable the Generate button
+          const btnLoad = document.getElementById('btnLoad');
+          if (btnLoad) {
+            btnLoad.disabled = false;
+          }
+        } else {
+          fileNameDisplay.textContent = 'No file selected';
+        }
+      });
+    }
+    
+    // Disable the Generate button initially
+    const btnLoad = document.getElementById('btnLoad');
+    if (btnLoad) {
+      btnLoad.disabled = true;
+    }
+  });
+
   const main = () => {
     const imgFile = document.getElementById("imgfile");
     const image = new Image();
+    
+    if (!imgFile.files || !imgFile.files[0]) {
+      alert('Please select an image file first.');
+      return;
+    }
+    
     const file = imgFile.files[0];
     const fileReader = new FileReader();
-  
+
+    // Show loading state
+    const btnLoad = document.getElementById('btnLoad');
+    const originalBtnText = btnLoad.textContent;
+    btnLoad.textContent = 'Processing...';
+    btnLoad.disabled = true;
+
     // Whenever file & image is loaded procced to extract the information from the image
     fileReader.onload = () => {
       image.onload = () => {
         // Set the canvas size to be the same as of the uploaded image
         const canvas = document.getElementById("canvas");
-        canvas.width = image.width;
-        canvas.height = image.height;
+        
+        // Calculate dimensions to fit within viewport while maintaining aspect ratio
+        const maxWidth = Math.min(window.innerWidth * 0.8, 800);
+        const maxHeight = 500;
+        
+        // Calculate scaling factor to maintain aspect ratio
+        const scale = Math.min(maxWidth / image.width, maxHeight / image.height);
+        
+        // Set canvas dimensions
+        canvas.width = image.width * scale;
+        canvas.height = image.height * scale;
+        
         const ctx = canvas.getContext("2d");
-        ctx.drawImage(image, 0, 0);
-  
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
         /**
          * getImageData returns an array full of RGBA values
          * each pixel consists of four values: the red value of the colour, the green, the blue and the alpha
@@ -304,19 +444,33 @@ const buildPalette = (colorsList) => {
          * the alpha is not from 0 to 1 like it is in the RGBA of CSS, but from 0 to 255.
          */
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  
+
         // Convert the image data to RGB values so its much simpler
         const rgbArray = buildRgb(imageData.data);
-  
+
         /**
          * Color quantization
          * A process that reduces the number of colors used in an image
          * while trying to visually maintin the original image as much as possible
          */
         const quantColors = quantization(rgbArray, 0);
-  
+
         // Create the HTML structure to show the color palette
         buildPalette(quantColors);
+        
+        // Show sections after image is processed
+        document.querySelector('.preview-container').style.display = 'flex';
+        document.querySelector('.palette-container').style.display = 'flex';
+        
+        // Reset button state
+        btnLoad.textContent = originalBtnText;
+        btnLoad.disabled = false;
+        
+        // Scroll to the results
+        document.querySelector('.preview-container').scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
       };
       image.src = fileReader.result;
     };
