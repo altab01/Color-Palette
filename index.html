@@ -10,20 +10,46 @@
     />
     <meta name="author" content="Zygimantas Sniurevicius" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Create color palette</title>
-    <link rel="stylesheet" href="./styles.css" />
+    <title>Color Palette Creator | Extract colors from images</title>
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   </head>
 
   <body>
+    <div class="container">
+      <h1>Color Palette Creator</h1>
+      <p class="subtitle">Upload an image to extract its dominant color palette</p>
+      
+      <div class="upload-area">
+        <div class="file-input-container">
+          <input type="file" id="imgfile" accept="image/*" />
+          <label for="imgfile" class="file-label">Choose an image</label>
+        </div>
+        <button id="btnLoad" onclick="main();">Generate Palette</button>
+        <p id="file-name" class="file-name">No file selected</p>
+      </div>
+      
+      <div class="preview-container">
+        <canvas id="canvas"></canvas>
+      </div>
+      
+      <div class="palette-container">
+        <h2 class="section-title">Primary Color Palette</h2>
+        <div id="palette"></div>
+        
+        <hr>
+        
+        <h2 class="section-title">Complementary Colors</h2>
+        <div id="complementary"></div>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p>Made with ❤️ | Color theory and image processing tool</p>
+    </div>
+    
     <script src="./index.js"></script>
-    <h1>Color palette creator</h1>
-    <form action="#">
-      <input type="file" id="imgfile" />
-      <input type="button" id="btnLoad" value="Load" onclick="main();" />
-    </form>
-    <canvas id="canvas"></canvas>
-    <div id="palette"></div>
-    <hr />
-    <div id="complementary"></div>
   </body>
 </html>
