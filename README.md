@@ -14,7 +14,8 @@ CSS for creating an intuitive user interface]
 | ![The main page where user can upload their image](![ss1](https://github.com/user-attachments/assets/7e13cb93-4942-4c0d-b666-8cd99392b2d0)
 | ![The result of an imagae, colors in an image and complementary colors](![Ss2](https://github.com/user-attachments/assets/267298a1-502f-4b6c-be7e-a881c24680c0)
     |
-| Image 3 | Image 4 |
-| ![Image 3 Description](path/to/image3.jpg) | ![Image 4 Description](path/to/image4.jpg) |
+| Image 3
+| ![real image of imaag2 ](![ss3](https://github.com/user-attachments/assets/af27fc28-1891-4cc6-b31f-44a7c51e56c6)
+)|
 
-[Rest of your README content...]
+
