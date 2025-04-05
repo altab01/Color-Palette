@@ -15,7 +15,7 @@ CSS for creating an intuitive user interface]
 | ![The result of an imagae, colors in an image and complementary colors](![Ss2](https://github.com/user-attachments/assets/267298a1-502f-4b6c-be7e-a881c24680c0)
     |
 | Image 3
-| ![real image of imaag2 ](![ss3](https://github.com/user-attachments/assets/af27fc28-1891-4cc6-b31f-44a7c51e56c6)
-)|
+| ![real image of imaag2 ](![ss3](![ss3](https://github.com/user-attachments/assets/b62d7e09-413f-4b02-b8d0-792bcd961f2e)
+)
 
 
