@@ -11,7 +11,9 @@ CSS for creating an intuitive user interface]
 
 | Image 1 | Image 2 |
 |---------|---------|
-| ![Image 1 Description]("C:\Users\hp\Downloads\ss1.png") | ![Image 2 Description]("C:\Users\hp\Downloads\Ss2.png") |
+| ![Image 1 Description](![ss1](https://github.com/user-attachments/assets/7e13cb93-4942-4c0d-b666-8cd99392b2d0)
+) | ![Image 2 Description](![Ss2](https://github.com/user-attachments/assets/267298a1-502f-4b6c-be7e-a881c24680c0)
+) |
 | Image 3 | Image 4 |
 | ![Image 3 Description](path/to/image3.jpg) | ![Image 4 Description](path/to/image4.jpg) |
 
