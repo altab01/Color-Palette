@@ -1,4 +1,4 @@
-# 🎨 Color Palette Generator
+# 🎨 Color Palette Generator -- link --> https://showmycolors.netlify.app/
 
 A lightweight web application that generates color palettes from any uploaded image using **pure HTML, CSS, and JavaScript**. It extracts **dominant** and **complementary** colors through canvas-based image processing and intuitive UI design.
 
